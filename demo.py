@@ -134,7 +134,7 @@ if __name__ == '__main__':
                         help='path to the input directory, where input images are stored.')
     parser.add_argument('-o', '--outputDir', default='TestImages/results', type=str,
                         help='path to the output directory, where results(obj,txt files) will be stored.')
-    parser.add_argument('--gpu', default='0', type=str,
+    parser.add_argument('--gpu', default='0,1,2,3,4,5,6,7', type=str,
                         help='set gpu id, -1 for CPU')
     parser.add_argument('--isDlib', default=True, type=ast.literal_eval,
                         help='whether to use dlib for detecting face, default is True, if False, the input image should be cropped in advance')
