@@ -65,7 +65,7 @@ def main(args):
         if pos is None:
             continue
 
-        if args.is3d or args.isMat or args.isPose or args.isShow:
+        if args.is3d or args.isMat or args.isPose or args.isShow or args.isDepth:
             # 3D vertices
             vertices = prn.get_vertices(pos)
             if args.isFront:
@@ -97,10 +97,13 @@ def main(args):
                 write_obj_with_colors(os.path.join(save_folder, name + '.obj'), save_vertices, prn.triangles, colors) #save 3d face(can open with meshlab)
 
         if args.isDepth:
+            # vertices.shape:(43867, 3)
             depth_image = get_depth_image(vertices, prn.triangles, h, w, True)
-            depth = get_depth_image(vertices, prn.triangles, h, w)
+            # depth_image.shape:(h, w)
+
+            # depth = get_depth_image(vertices, prn.triangles, h, w)
             imsave(os.path.join(save_folder, name + '_depth.jpg'), depth_image)
-            sio.savemat(os.path.join(save_folder, name + '_depth.mat'), {'depth':depth})
+            # sio.savemat(os.path.join(save_folder, name + '_depth.mat'), {'depth':depth})
 
         if args.isMat:
             sio.savemat(os.path.join(save_folder, name + '_mesh.mat'), {'vertices': vertices, 'colors': colors, 'triangles': prn.triangles})
@@ -134,11 +137,11 @@ if __name__ == '__main__':
                         help='path to the input directory, where input images are stored.')
     parser.add_argument('-o', '--outputDir', default='TestImages/results', type=str,
                         help='path to the output directory, where results(obj,txt files) will be stored.')
-    parser.add_argument('--gpu', default='0,1,2,3,4,5,6,7', type=str,
+    parser.add_argument('--gpu', default='-1', type=str,
                         help='set gpu id, -1 for CPU')
-    parser.add_argument('--isDlib', default=True, type=ast.literal_eval,
+    parser.add_argument('--isDlib', default=False, type=ast.literal_eval,
                         help='whether to use dlib for detecting face, default is True, if False, the input image should be cropped in advance')
-    parser.add_argument('--is3d', default=True, type=ast.literal_eval,
+    parser.add_argument('--is3d', default=False, type=ast.literal_eval,
                         help='whether to output 3D face(.obj). default save colors.')
     parser.add_argument('--isMat', default=False, type=ast.literal_eval,
                         help='whether to save vertices,color,triangles as mat for matlab showing')
@@ -154,7 +157,7 @@ if __name__ == '__main__':
     parser.add_argument('--isFront', default=False, type=ast.literal_eval,
                         help='whether to frontalize vertices(mesh)')
     # update in 2017/4/25
-    parser.add_argument('--isDepth', default=False, type=ast.literal_eval,
+    parser.add_argument('--isDepth', default=True, type=ast.literal_eval,
                         help='whether to output depth image')
     # update in 2017/4/27
     parser.add_argument('--isTexture', default=False, type=ast.literal_eval,
